@@ -4,49 +4,53 @@ import java.util.*
 fun main() {
     print("Enter the max number:\n")
 
-    val max = readLine().let {
+    val maximum = readLine().let {
         if (it == null) {
             throw Error()
         }
         Integer.valueOf(it)
     }
 
-    var results = List(max) {
-        BitSet(max)
+    var results = List(maximum) {
+        BitSet(maximum)
     }
-    results.forEachIndexed { i, v ->
-        val i = i + 1
+    results.forEachIndexed { index, multiplesMap ->
+        val index = index + 1
 
-        for (j in 2..max) {
-            v[j] = i % j == 0
+        for (j in 2..maximum) {
+            multiplesMap[j] = index % j == 0
         }
 
         var rules = mutableListOf<MutableList<String>.() -> Unit>(
             {
-                if (v[3]) add("Fizz")
+                if (multiplesMap[3]) add("Fizz")
+            },
+
+            {
+                if (multiplesMap[5]) add("Buzz")
             },
             {
-                if (v[13]) add("Fezz")
+                if (multiplesMap[7]) add("Bang")
             },
             {
-                if (v[5]) add("Buzz")
-            },
-            {
-                if (v[7]) add("Bang")
-            },
-            {
-                if (v[11]) {
-                    retainAll { it == "Fezz" }
+                if (multiplesMap[11]) {
+                    clear()
                     add("Bong")
                 }
             },
             {
-                if (v[17]) {
+                if (multiplesMap[13])
+                add(indexOfFirst {
+                    it.first() == 'B'
+                }.takeUnless{ it == -1 } ?: lastIndex+1,"Fezz")
+            },
+            {
+                if (multiplesMap[17]) {
                     this.reverse()
                 }
             },
             {
-                if (isEmpty()) add(i.toString())
+                if (isEmpty()) add(index.toString())
             }
         )
 
