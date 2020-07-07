@@ -21,50 +21,41 @@ fun main() {
             v[j] = i % j == 0
         }
 
-        val rules = mutableListOf<String.() -> String>()
-        rules.addAll(
-            listOf<String.() -> String>(
-                {
-                    if (v[3]) plus("Fizz") else this
-                },
-                {
-                    if (v[13]) plus("Fezz") else this
-                },
-                {
-                    if (v[5]) plus("Buzz") else this
-                },
-                {
-                    if (v[7]) plus("Bang") else this
-                },
-                {
-                    if (v[11]) ("Fezz".takeIf { v[13] } ?: "") + "Bong" else this
-                },
-
-                {
-                    if (v[17]) {
-                        val combinedRules =
-                            rules.subList(0, rules.lastIndex - 1)
-                                .reduce { acc: String.() -> String, function: String.() -> String ->
-                                    {
-                                        this.function().acc()
-                                    }
-                                }
-                        "".combinedRules()
-                    } else this
-                },
-                {
-                    if (isEmpty()) i.toString() else this
+        var rules = mutableListOf<MutableList<String>.() -> Unit>(
+            {
+                if (v[3]) add("Fizz")
+            },
+            {
+                if (v[13]) add("Fezz")
+            },
+            {
+                if (v[5]) add("Buzz")
+            },
+            {
+                if (v[7]) add("Bang")
+            },
+            {
+                if (v[11]) {
+                    retainAll { it == "Fezz" }
+                    add("Bong")
                 }
-            )
+            },
+            {
+                if (v[17]) {
+                    this.reverse()
+                }
+            },
+            {
+                if (isEmpty()) add(i.toString())
+            }
         )
 
-        val combinedRules =
-            rules.reduce { acc: String.() -> String, function: String.() -> String ->
-                {
-                    this.acc().function()
-                }
+        print(mutableListOf<String>().apply {
+            rules.forEach {
+                it(this)
             }
-        print("".combinedRules())
+        }.joinToString(""))
+
         print("\n")
     }
 
